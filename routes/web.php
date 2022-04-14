@@ -29,6 +29,10 @@ Route::post('/articles/add', [ArticleController::class,'create']);
 
 Route::get('/articles/delete/{id}', [ArticleController::class,'delete']);
 
+Route::get('/articles/update/{id}',[ArticleController::class,'updatearticle']);
+
+Route::post('/articles/update/{id}',[ArticleController::class,'update']);
+
 Route::post('/comments/add', [CommentController::class,'create']);
 
 Route::get('/comments/delete/{id}', [CommentController::class,'delete']);

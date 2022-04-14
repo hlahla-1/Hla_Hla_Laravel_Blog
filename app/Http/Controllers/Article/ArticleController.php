@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Article;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Article;
+use App\Models\Category;
 
 class ArticleController extends Controller
 {
@@ -22,10 +23,11 @@ class ArticleController extends Controller
     }
     public function add()
     {
-        $data = [
-            [ "id" => 1, "name" => "News" ],
-            [ "id" => 2, "name" => "Tech" ],
-        ];
+        $data=Category::all();
+        // $data = [
+        //     [ "id" => 1, "name" => "News" ],
+        //     [ "id" => 2, "name" => "Tech" ],
+        // ];
         return view('articles.add', [
             'categories' => $data
         ]);
@@ -55,6 +57,33 @@ class ArticleController extends Controller
         $article = Article::find($id);
         $article->delete();
         return redirect('/articles')->with('info', 'Article deleted');
+    }
+    public function updatearticle($id){
+        $article = Article::find($id);
+        $categories= Category::all();
+        $data = new Article;
+        $data->title = $article->title;
+        $data->body = $article->body;  
+        $data->category_id = $article->category_id;    
+        return view('articles.update',['article'=> $data,'categories'=>$categories]);
+    }
+    public function update($id){
+        $article = Article::find($id);
+        $validator = validator(request()->all(), [
+            'title' => 'required',
+            'body' => 'required',
+            'category_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+        $article->title = request()->title;
+        $article->body = request()->body;
+        $article->category_id = request()->category_id;
+        $article->save();
+
+        return redirect('/articles')->with('info','Article Updated');
     }
     public function __construct()
     {
